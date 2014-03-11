@@ -1,9 +1,21 @@
 /*jslint sloppy:true, browser: true, devel: true, eqeq: true, vars: true, white: true*/
 /*global Phaser:true*/
 
+// Make this false to to turn off debugging (will run faster)
+var enableDebugging = true;
+
+
 var game = null;
 var map = null;
 var layers = null;
+var cursors = null;
+var player = null;
+
+function setupCollisionLayer(game, map, layer) {
+    layer.visible = false;
+    map.setCollisionByExclusion([], true, layer);
+}
+
 var gameState = {
     preload: function (game) {
         // Load the area01 map and its tiles
@@ -20,19 +32,50 @@ var gameState = {
         map.addTilesetImage('area01_level_tiles', 'area01_level_tiles');
         
         // Create all of the layers from the tileset,
-        // but set visible to false if the name has 'collision' in it.
+        // but set visible to false if the name is 'collision'
         layers = {};
         map.layers.forEach(function (layerData) {
             var layer = map.createLayer(layerData.name);
-            layer.visible = !/collision/i.test(layerData.name);
+            if (layerData.name === 'collision') {
+                setupCollisionLayer(game, map, layer);
+            }
             layers[layerData.name] = layer;
         });
         
-        var player = game.add.sprite(32*10, 32*4, 'gripe_run_right');
+        player = game.add.sprite(32*10, 32*4, 'gripe_run_right');
         // Use all of the frames for the 'walk' animation
         player.animations.add('walk');
         // Play the walk animation at 20fps and loop
         player.animations.play('walk', 15, true);
+        
+        game.physics.gravity.y = 250;
+        player.body.bounce.y = 0.2;
+        player.body.linearDamping = 1;
+        player.body.collideWorldBounds = true;
+        game.camera.follow(player);
+
+        cursors = game.input.keyboard.createCursorKeys();
+    },
+    update: function (game) {
+        game.physics.collide(player, layers.collision);
+        player.body.velocity.x = 0;
+        if (cursors.up.isDown) {
+            if (player.body.onFloor()) {
+                player.body.velocity.y = -300;
+            }
+        }
+        if (cursors.left.isDown) {
+            player.body.velocity.x = -150;
+        }
+        if (cursors.right.isDown) {
+            player.body.velocity.x = 150;
+        }
+    },
+    render: function (game) {
+        if (enableDebugging) {
+            game.debug.renderCameraInfo(game.camera, 640, 480);
+            game.debug.renderPhysicsBody(player.body);
+        }
     }
 };
 
@@ -41,7 +84,7 @@ window.onload = function() {
     var antialias = true;
     game = new Phaser.Game(
         640, 480,
-        Phaser.AUTO,
+        (enableDebugging ? Phaser.CANVAS : Phaser.AUTO),
         'game-div',
         gameState,
         transparent,
