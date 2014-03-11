@@ -18,11 +18,11 @@ var gameState = {
         map.addTilesetImage('area01_level_tiles', 'area01_level_tiles');
         
         // Create all of the layers from the tileset,
-        // excluding the ones that have 'collision' in the name
-        map.layers.forEach(function (layer) {
-            if (!(/collision/i).test(layer.name)) {
-                layers[name] = map.createLayer(layer.name);
-            }
+        // but set visible to false if the name has 'collision' in it.
+        map.layers.forEach(function (layerData) {
+            var layer = map.createLayer(layerData.name);
+            layer.visible = !/collision/i.test(layerData.name);
+            layers[layerData.name] = layer;
         });
     }
 };
