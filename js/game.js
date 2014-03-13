@@ -43,13 +43,14 @@ var gameState = {
         });
         
         player = game.add.sprite(32*10, 32*4, 'gripe_run_right');
+        player.anchor.setTo(0.5, 0.5);
+        // width, height, translateX, translateY
+        player.body.setRectangle(40, 56, 15, 7);
         // Use all of the frames for the 'walk' animation
         player.animations.add('walk');
-        // Play the walk animation at 20fps and loop
-        player.animations.play('walk', 15, true);
         
         game.physics.gravity.y = 250;
-        player.body.bounce.y = 0.2;
+        player.body.bounce.y = 0;
         player.body.linearDamping = 1;
         player.body.collideWorldBounds = true;
         game.camera.follow(player);
@@ -66,9 +67,16 @@ var gameState = {
         }
         if (cursors.left.isDown) {
             player.body.velocity.x = -150;
+            player.scale.x = -1;
         }
         if (cursors.right.isDown) {
             player.body.velocity.x = 150;
+            player.scale.x = 1;
+        }
+        if (Math.abs(player.body.velocity.x) > 1) {
+            player.animations.play('walk', 15, true);
+        } else {
+            player.animations.stop();
         }
     },
     render: function (game) {
