@@ -14,6 +14,7 @@ var player = null;
 function setupCollisionLayer(game, map, layer) {
     layer.visible = false;
     map.setCollisionByExclusion([], true, layer);
+    layer.resizeWorld();
 }
 
 var gameState = {
@@ -43,6 +44,7 @@ var gameState = {
         });
         
         player = game.add.sprite(32*10, 32*4, 'gripe_run_right');
+        // rotate & flip around the center of the sprite
         player.anchor.setTo(0.5, 0.5);
         // width, height, translateX, translateY
         player.body.setRectangle(40, 56, 15, 7);
@@ -66,15 +68,15 @@ var gameState = {
             }
         }
         if (cursors.left.isDown) {
-            player.body.velocity.x = -150;
-            player.scale.x = -1;
-        }
-        if (cursors.right.isDown) {
-            player.body.velocity.x = 150;
-            player.scale.x = 1;
-        }
-        if (Math.abs(player.body.velocity.x) > 1) {
             player.animations.play('walk', 15, true);
+            player.body.velocity.x = -150;
+            // flip left
+            player.scale.x = -1;
+        } else if (cursors.right.isDown) {
+            player.animations.play('walk', 15, true);
+            player.body.velocity.x = 150;
+            // flip right
+            player.scale.x = 1;
         } else {
             player.animations.stop();
         }
