@@ -48,11 +48,12 @@ var gameState = {
         // rotate & flip around the center of the sprite
         player.anchor.setTo(0.5, 0.5);
         // width, height, translateX, translateY
-        player.body.setRectangle(40, 56, 15, 7);
+        game.physics.arcade.enableBody(player);
+        player.body.setSize(40, 56, 15, 7);
         // Use all of the frames for the 'walk' animation
         player.animations.add('walk');
         
-        game.physics.gravity.y = 250;
+        player.body.gravity.y = 250;
         player.body.bounce.y = 0;
         player.body.linearDamping = 1;
         player.body.collideWorldBounds = true;
@@ -61,7 +62,7 @@ var gameState = {
         cursors = game.input.keyboard.createCursorKeys();
     },
     update: function (game) {
-        game.physics.collide(player, layers.collision);
+        game.physics.arcade.collide(player, layers.collision);
         player.body.velocity.x = 0;
         if (cursors.up.isDown) {
             if (player.body.onFloor()) {
@@ -84,8 +85,8 @@ var gameState = {
     },
     render: function (game) {
         if (enableDebugging) {
-            game.debug.renderCameraInfo(game.camera, 640, 480);
-            game.debug.renderPhysicsBody(player.body);
+            //game.debug.cameraInfo(game.camera, 16, 16);
+            game.debug.spriteBounds(player);
         }
     }
 };
