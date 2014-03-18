@@ -26,6 +26,7 @@ var gameState = {
         game.load.spritesheet('gripe_run_right', 'data/img/sprite/gripe_run_right.png', 64, 64);
     },
     create: function (game) {
+        game.physics.startSystem(Phaser.Physics.ARCADE);
         game.stage.backgroundColor = '#21C3FC';
         
         // Create the map and associate the tiles with it
