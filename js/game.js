@@ -49,7 +49,7 @@ var gameState = {
         player.anchor.setTo(0.5, 0.5);
         // width, height, translateX, translateY
         game.physics.arcade.enableBody(player);
-        player.body.setSize(40, 56, 15, 7);
+        player.body.setSize(40, 56, 15, 24);
         // Use all of the frames for the 'walk' animation
         player.animations.add('walk');
         
@@ -86,7 +86,7 @@ var gameState = {
     render: function (game) {
         if (enableDebugging) {
             //game.debug.cameraInfo(game.camera, 16, 16);
-            game.debug.spriteBounds(player);
+            game.debug.body(player);
         }
     }
 };
